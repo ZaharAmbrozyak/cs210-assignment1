@@ -13,5 +13,7 @@ class Program
         var expression = Console.ReadLine();
         
         var lexer = calculator.GetLexer(expression);
+
+        var postfix = calculator.GetPostfix(lexer);
     }
 }
