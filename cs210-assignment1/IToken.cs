@@ -1,6 +1,6 @@
 namespace cs210_assignment1;
 
-public class IToken
+public interface IToken
 {
     
 }
