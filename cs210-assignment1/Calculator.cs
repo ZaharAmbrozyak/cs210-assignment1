@@ -76,7 +76,7 @@ public class Calculator
             }
             else if (token is OperationToken { Operation: "," })
             {
-                while (!stack.Empty && stack.Head is not OperationToken { Operation: "(" } token1)
+                while (!stack.Empty && stack.Head is not OperationToken { Operation: "(" })
                 {
                     postfix.Add(stack.Get());
                 }
@@ -94,7 +94,7 @@ public class Calculator
                     stack.Get();
                 }
 
-                if (stack is { Empty: false, Head: FunctionToken funcToken })
+                if (stack is { Empty: false, Head: FunctionToken })
                 {
                     postfix.Add(stack.Get());
                 }
