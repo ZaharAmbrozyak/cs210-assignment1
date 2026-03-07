@@ -12,8 +12,11 @@ class Program
         var calculator = new Calculator();
         var expression = Console.ReadLine();
         
-        var lexer = calculator.GetLexer(expression);
+        var lexer = calculator.GetLexer(expression!);
 
         var postfix = calculator.GetPostfix(lexer);
+
+        var number = calculator.CalculatePostfix(postfix);
+        Console.WriteLine(number);
     }
 }

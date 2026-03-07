@@ -68,7 +68,36 @@ public class Calculator
             }
             else if(token is FunctionToken functionToken)
             {
-                postfix.Add(functionToken);
+                stack.Add(functionToken);
+            }
+            else if (token is OperationToken { Operation: "(" })
+            {
+                stack.Add(token);
+            }
+            else if (token is OperationToken { Operation: "," })
+            {
+                while (!stack.Empty && stack.Head is not OperationToken { Operation: "(" } token1)
+                {
+                    postfix.Add(stack.Get());
+                }
+            }
+            
+            else if (token is OperationToken { Operation: ")" })
+            {
+                while (stack is { Empty: false, Head: OperationToken opToken } && opToken.Operation != "(" )
+                {
+                    postfix.Add(stack.Get());
+                }
+
+                if (stack is { Empty: false, Head: OperationToken { Operation: "(" } })
+                {
+                    stack.Get();
+                }
+
+                if (stack is { Empty: false, Head: FunctionToken funcToken })
+                {
+                    postfix.Add(stack.Get());
+                }
             }
             else if (token is OperationToken operationToken)
             {
@@ -89,34 +118,6 @@ public class Calculator
                 }
                 stack.Add(operationToken);
             }
-            else if (token is OperationToken { Operation: "," })
-            {
-                while (!stack.Empty && stack.Head is not OperationToken { Operation: "(" } token1)
-                {
-                    postfix.Add(stack.Get());
-                }
-            }
-            else if (token is OperationToken { Operation: "(" })
-            {
-                stack.Add(token);
-            }
-            else if (token is OperationToken { Operation: ")" })
-            {
-                while (stack is { Empty: false, Head: OperationToken { Operation: "(" } })
-                {
-                    postfix.Add(stack.Get());
-                }
-
-                if (stack is { Empty: false, Head: OperationToken { Operation: "(" } })
-                {
-                    stack.Get();
-                }
-
-                if (stack is { Empty: false, Head: FunctionToken funcToken })
-                {
-                    postfix.Add(stack.Get());
-                }
-            }
             else
             {
                 throw new ArgumentException($"Bad token: {token}");
@@ -136,7 +137,73 @@ public class Calculator
         postfix.Add(new EofToken());
         return postfix;
     }
-    
+
+    public double CalculatePostfix(PostfixExpression postfix)
+    {
+        var stack = new Stack<IToken>(postfix.Size); 
+        double valueLeft, valueRight, result;
+        while (postfix.Peek is not EofToken)
+        {
+            var token = postfix.Get();
+            
+            if (token is NumberToken)
+            {
+                stack.Add(token);
+            }
+            else if (token is OperationToken operationToken)
+            {
+                valueRight = ((NumberToken)stack.Get()).Value;
+
+                valueLeft = ((NumberToken)stack.Get()).Value;
+
+                result = operationToken.Operation switch
+                {
+                    "+" => valueLeft + valueRight,
+                    "-" => valueLeft - valueRight,
+                    "*" => valueLeft * valueRight,
+                    "/" => valueLeft / valueRight,
+                    "^" => Math.Pow(valueLeft, valueRight),
+                    _ => throw new ArgumentException($"Operation '{operationToken.Operation}' does not exist!")
+                };
+                stack.Add(new NumberToken(result));
+            }
+            else if (token is FunctionToken functionToken)
+            {
+                    valueLeft = ((NumberToken)stack.Get()).Value;
+                    
+                    switch(functionToken.Name)
+                    {
+                        case "sin":
+                            result = Math.Sin(valueLeft);
+                            break;
+                        case "cos":
+                            result = Math.Cos(valueLeft);
+                            break;
+                            
+                        case "tan":
+                            result = Math.Tan(valueLeft);
+                            break;
+                            
+                        case "log":
+                            result = Math.Log(valueLeft);
+                            break;
+                        case "max":
+                            valueRight = ((NumberToken)stack.Get()).Value;
+                            result = Math.Max(valueLeft, valueRight);
+                            break;
+                        case "min":
+                            valueRight = ((NumberToken)stack.Get()).Value;
+                            result = Math.Min(valueLeft, valueRight);
+                            break;
+                        default:
+                            throw new ArgumentException($"Operation '{functionToken.Name}' Does not exist!");
+                    }
+                    stack.Add(new NumberToken(result));
+            }
+        }
+
+        return ((NumberToken)stack.Get()).Value;
+    }
     private double GetPriority(string op)
     {
         return op switch
