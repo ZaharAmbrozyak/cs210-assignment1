@@ -4,7 +4,7 @@ public class Queue<T>(int capacity)
 {
     private readonly T[] _array = new T[capacity];
     private int _pointer;
-    
+
     public int Size => _pointer;
 
     public T Head => _pointer == 0 ? throw new Exception("Tried to get head, but queue is empty!") : _array[0];
