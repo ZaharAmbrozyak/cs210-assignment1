@@ -8,14 +8,14 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
 
     public ArrayList<INode> Arguments { get; } = arguments;
 
-    public INode Calculate(Dictionary<string, INode> memory)
+    public INode Calculate(Dictionary<string, INode> memory, ArrayList<string> visited)
     {
         var calculatedArgs = new ArrayList<INode>();
 
         for (var i = 0; i < Arguments.Size; i++)
         {
             var argument = Arguments.Get(i);
-            calculatedArgs.Add(argument.Calculate(memory));
+            calculatedArgs.Add(argument.Calculate(memory, visited));
         }
 
         double argument1, argument2, result;
@@ -79,7 +79,7 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
 
     public string Show(Dictionary<string, INode> memory)
     {
-        string arguments = "";
+        var arguments = "";
         for(var i = 0; i < Arguments.Size - 1; i++)
         {
             arguments += Arguments.Get(i).Show(memory) + ", ";

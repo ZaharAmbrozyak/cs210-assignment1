@@ -4,7 +4,7 @@ public class NumberNode(double value) : INode
 {
     public double Value { get; } = value;
 
-    public INode Calculate(Dictionary<string, INode> memory)
+    public INode Calculate(Dictionary<string, INode> memory, ArrayList<string> visited)
     {
         return this;
     }

@@ -6,7 +6,7 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
     
     public readonly ArrayList<INode> Arguments = operands;
 
-    public INode Calculate(Dictionary<string, INode> memory)
+    public INode Calculate(Dictionary<string, INode> memory, ArrayList<string> visited)
     {
         if (Operator == "=")
         {
@@ -15,15 +15,15 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
                 throw new ArgumentException("Lhs should be a variable!");
             }
 
-            var rhs = Arguments.Get(1).Calculate(memory);
+            var rhs = Arguments.Get(1).Calculate(memory, visited);
 
             memory[variableNode.Name] = rhs;
 
             return rhs;
         }
 
-        var first = Arguments.Get(0).Calculate(memory);
-        var second = Arguments.Get(1).Calculate(memory);
+        var first = Arguments.Get(0).Calculate(memory, visited);
+        var second = Arguments.Get(1).Calculate(memory, visited);
 
         if (first is NumberNode leftNumber && second is NumberNode rightNumber)
         {

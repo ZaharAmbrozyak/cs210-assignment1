@@ -45,5 +45,33 @@ public class ArrayList<T>
         {
             _array[i] = _array[i + 1];
         }
+
+        _pointer--;
+    }
+
+    public void Remove(T value)
+    {
+        for(var i = 0; i < _pointer; i++)
+        {
+            if (Equals(_array[i], value))
+            {
+                Delete(i);
+                return;
+            }
+        }
+
+        throw new ArgumentException($"{value} was not found!");
+    }
+    public bool Find(T value)
+    {
+        for (var i = 0; i < _pointer; i++)
+        {
+            if (Equals(_array[i], value))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

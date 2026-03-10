@@ -3,6 +3,7 @@ namespace cs210_assignment1;
 public class Parser
 {
     private readonly Dictionary<string, INode> _memory = new();
+    private readonly ArrayList<string> _visited = new();
     
     private Lexer GetLexer(string expression)
     {
@@ -175,7 +176,7 @@ public class Parser
         var lexer = GetLexer(expression);
         var node = ParseExpression(lexer, 0.0);
         
-        return node.Calculate(_memory).Show(_memory);
+        return node.Calculate(_memory, _visited).Show(_memory);
     }
     
     public void Run()
@@ -190,6 +191,7 @@ public class Parser
             }
 
             Console.WriteLine(CalculateExpression(expression));
+            ShowAst(ParseExpression(GetLexer(expression), 0.0), "");
             
         }
     }
