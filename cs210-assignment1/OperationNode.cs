@@ -14,9 +14,13 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
             {
                 throw new ArgumentException("Lhs should be a variable!");
             }
-
+            
+            visited.Add("Enter");
+            
             var rhs = Arguments.Get(1).Calculate(memory, visited);
 
+            visited.Remove("Enter");
+            
             memory[variableNode.Name] = rhs;
 
             return rhs;

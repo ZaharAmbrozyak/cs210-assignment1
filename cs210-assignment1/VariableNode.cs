@@ -6,6 +6,10 @@ public class VariableNode(string name) : INode
 
     public INode Calculate(Dictionary<string, INode> memory, ArrayList<string> visited)
     {
+        if (visited.Find("Enter"))
+        {
+            return this;
+        }
         if (visited.Find(Name))
         {
             throw new Exception($"Wrong operation! Cannot assign a=b and b=a !");

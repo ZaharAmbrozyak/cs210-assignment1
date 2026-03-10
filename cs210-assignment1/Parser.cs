@@ -191,11 +191,11 @@ public class Parser
             }
 
             Console.WriteLine(CalculateExpression(expression));
-            ShowAst(ParseExpression(GetLexer(expression), 0.0), "");
-            
+            // ShowAst(ParseExpression(GetLexer(expression), 0.0), "");
         }
     }
 
+ 
     public void ShowAst(INode node, string backTrack)
     {
         switch (node)
