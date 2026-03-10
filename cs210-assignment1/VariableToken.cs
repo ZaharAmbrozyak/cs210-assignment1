@@ -2,11 +2,11 @@ namespace cs210_assignment1;
 
 public class VariableToken(string name) : IToken
 {
-    public string Name { get; set; } = name;
+    public string Name { get; } = name;
 
     public double Get(Dictionary<string, double> memory)
     {
-        if (memory.TryGetValue(name, out var value))
+        if (memory.TryGetValue(Name, out var value))
         {
             return value;
         }

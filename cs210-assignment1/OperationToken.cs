@@ -2,5 +2,5 @@ namespace cs210_assignment1;
 
 public class OperationToken(string operation) : IToken
 {
-    public string Operation { get; set; } = operation;
+    public string Operation { get; } = operation;
 }

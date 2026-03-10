@@ -49,8 +49,8 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
 
     public string Show(Dictionary<string, INode> memory)
     {
-        var first = Arguments.Get(0).Calculate(memory).Show(memory);
-        var second = Arguments.Get(1).Calculate(memory).Show(memory);
+        var first = Arguments.Get(0).Show(memory);
+        var second = Arguments.Get(1).Show(memory);
 
         return first + Operator + second;
     }

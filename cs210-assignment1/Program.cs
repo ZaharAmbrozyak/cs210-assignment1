@@ -1,6 +1,6 @@
 ﻿namespace cs210_assignment1;
 
-static class Program
+internal static class Program
 {
     private static void Main()
     {

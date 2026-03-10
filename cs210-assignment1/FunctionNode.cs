@@ -48,7 +48,7 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
             case "max" or "min":
                 if (Arguments.Size != 2)
                 {
-                    throw new ArgumentException($"Expected 2 arguments but got '{Arguments.Size}!");
+                    throw new ArgumentException($"Expected 2 arguments but got {Arguments.Size}!");
                 }
 
                 if (calculatedArgs.Get(0) is not NumberNode leftNode ||
@@ -80,11 +80,12 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
     public string Show(Dictionary<string, INode> memory)
     {
         string arguments = "";
-        for(var i = 0; i < Arguments.Size; i++)
+        for(var i = 0; i < Arguments.Size - 1; i++)
         {
             arguments += Arguments.Get(i).Show(memory) + ", ";
         }
 
+        arguments += Arguments.Get(Arguments.Size - 1).Show(memory);
         return Name + "(" + arguments + ")";
     }
 }
