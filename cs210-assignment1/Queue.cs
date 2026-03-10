@@ -9,8 +9,6 @@ public class Queue<T>(int capacity)
 
     public T Head => _pointer == 0 ? throw new Exception("Tried to get head, but queue is empty!") : _array[0];
 
-    public bool Empty => _pointer == 0;
-
     public void Add(T value)
     {
         if (_pointer == _array.Length)

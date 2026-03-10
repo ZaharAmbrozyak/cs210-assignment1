@@ -167,13 +167,29 @@ public class Calculator
             case OperationNode operationNode:
             {
                 Console.WriteLine(operationNode.Operator);
-                for (var i = 0; i < operationNode.Operands.Size; i++)
+                for (var i = 0; i < operationNode.Arguments.Size; i++)
                 {
                     Console.Write(backTrack + "|-- ");
                 
-                    var isLast = (i == operationNode.Operands.Size - 1); 
+                    var isLast = (i == operationNode.Arguments.Size - 1); 
                     var nextBackTrack = backTrack + (isLast ? "    " : "|   ");
-                    var operand = operationNode.Operands.Get(i);
+                    var operand = operationNode.Arguments.Get(i);
+                
+                    ShowAst(operand, nextBackTrack);
+                }
+
+                break;
+            }
+            case FunctionNode functionNode:
+            {
+                Console.WriteLine(functionNode.Name);
+                for (var i = 0; i < functionNode.Arguments.Size; i++)
+                {
+                    Console.Write(backTrack + "|-- ");
+                
+                    var isLast = (i == functionNode.Arguments.Size - 1); 
+                    var nextBackTrack = backTrack + (isLast ? "    " : "|   ");
+                    var operand = functionNode.Arguments.Get(i);
                 
                     ShowAst(operand, nextBackTrack);
                 }
