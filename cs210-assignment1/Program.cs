@@ -2,21 +2,15 @@
 
 using System.Globalization;
 
-class Program
+static class Program
 {
-    static void Main(string[] args)
+    private static void Main()
     {
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
-        var calculator = new Calculator();
-        var expression = Console.ReadLine();
+        var algorithm = new ShuntingYard();
         
-        var lexer = calculator.GetLexer(expression!);
-
-        var postfix = calculator.GetPostfix(lexer);
-
-        var number = calculator.CalculatePostfix(postfix);
-        Console.WriteLine(number);
+        algorithm.Run();
     }
 }

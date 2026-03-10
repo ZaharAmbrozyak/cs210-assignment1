@@ -1,7 +1,9 @@
 namespace cs210_assignment1;
 
-public class Calculator
+public class ShuntingYard
 {
+    private readonly Dictionary<string, double> _memory = new();
+    
     public Lexer GetLexer(string expression)
     {
         var lexer = new Lexer(expression.Length + 1);
@@ -35,7 +37,7 @@ public class Calculator
                     i++;
                 }
 
-                if (expression[i] == '(')
+                if (i < expression.Length && expression[i] == '(')
                 {
                     lexer.Add(new FunctionToken(word));
                 }
@@ -56,27 +58,47 @@ public class Calculator
 
     public PostfixExpression GetPostfix(Lexer lexer)
     {
-        var postfix = new PostfixExpression(lexer.Size);
+        var postfix = new PostfixExpression(lexer.Size + 1);
         var stack = new Stack<IToken>(lexer.Size);
 
         while (lexer.Peek is not EofToken)
         {
             var token = lexer.Get();
-            if (token is NumberToken numberToken)
+            if (token is OperationToken { Operation: "=" })
+            {
+                if (postfix is {Size: 1, Peek: VariableToken variableToken})
+                {
+                    var variableName = variableToken.Name;
+                    var rhsPostfix = GetPostfix(lexer);
+                    var value = CalculatePostfix(rhsPostfix);
+                    _memory[variableName] = value;
+                    
+                    rhsPostfix.Add(new NumberToken(value));
+                    rhsPostfix.Add(new EofToken());
+                    return rhsPostfix;
+                }
+                throw new Exception("Lhs should be a variable!");
+            }
+            else if (token is NumberToken numberToken)
             {
                 postfix.Add(numberToken);
+            }
+            else if (token is VariableToken variableToken)
+            {
+                postfix.Add(variableToken);
             }
             else if(token is FunctionToken functionToken)
             {
                 stack.Add(functionToken);
             }
+            
             else if (token is OperationToken { Operation: "(" })
             {
                 stack.Add(token);
             }
             else if (token is OperationToken { Operation: "," })
             {
-                while (!stack.Empty && stack.Head is not OperationToken { Operation: "(" })
+                while (stack is { Empty: false, Head: not OperationToken { Operation: "(" } })
                 {
                     postfix.Add(stack.Get());
                 }
@@ -150,6 +172,18 @@ public class Calculator
             {
                 stack.Add(token);
             }
+
+            else if (token is VariableToken variableToken)
+            {
+                if(_memory.TryGetValue(variableToken.Name, out var value))
+                {
+                    stack.Add(new NumberToken(value));
+                }
+                else
+                {
+                    throw new KeyNotFoundException($"Variable '{variableToken.Name}' does not exist!");
+                }
+            }
             else if (token is OperationToken operationToken)
             {
                 valueRight = ((NumberToken)stack.Get()).Value;
@@ -202,7 +236,30 @@ public class Calculator
             }
         }
 
+        postfix.Get();
         return ((NumberToken)stack.Get()).Value;
+    }
+
+    private double CalculateFromString(string expression)
+    {
+        var lexer = GetLexer(expression!);
+        var postfix = GetPostfix(lexer);
+        var result = CalculatePostfix(postfix);
+        return result;
+    }
+    public void Run()
+    {
+        while (true)
+        {
+            Console.Write(">>> ");
+            var expression = Console.ReadLine();
+            if (string.IsNullOrEmpty(expression) || expression == "exit")
+            {
+                break;
+            }
+            Console.WriteLine("<<< " + CalculateFromString(expression));
+        }
+
     }
     private double GetPriority(string op)
     {
