@@ -4,8 +4,13 @@ public class NumberNode(double value) : INode
 {
     public double Value { get; } = value;
 
-    public double Calculate(Dictionary<string, double> memory)
+    public INode Calculate(Dictionary<string, INode> memory)
     {
-        return Value;
+        return this;
+    }
+
+    public string Show(Dictionary<string, INode> memory)
+    {
+        return Value.ToString();
     }
 }

@@ -2,5 +2,7 @@ namespace cs210_assignment1;
 
 public interface INode
 {
-    public double Calculate(Dictionary<string, double> memory);
+    public INode Calculate(Dictionary<string, INode> memory);
+
+    public string Show(Dictionary<string, INode> memory);
 }

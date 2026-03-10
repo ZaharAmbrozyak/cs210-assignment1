@@ -8,9 +8,9 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
 
     public ArrayList<INode> Arguments { get; } = arguments;
 
-    public double Calculate(Dictionary<string, double> memory)
+    public INode Calculate(Dictionary<string, INode> memory)
     {
-        var calculatedArgs = new ArrayList<double>();
+        var calculatedArgs = new ArrayList<INode>();
 
         for (var i = 0; i < Arguments.Size; i++)
         {
@@ -26,7 +26,16 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
                 {
                     throw new ArgumentException($"Expected 1 argument but got {Arguments.Size}!");
                 }
-                argument1 = calculatedArgs.Get(0);
+
+                if (calculatedArgs.Get(0) is not NumberNode numberNode)
+                {
+                    var args = new ArrayList<INode>();
+                    args.Add(calculatedArgs.Get(0));
+                    
+                    return new FunctionNode(Name, args);
+                }
+                
+                argument1 = numberNode.Value;
                 
                 result = Name switch
                 {
@@ -41,9 +50,18 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
                 {
                     throw new ArgumentException($"Expected 2 arguments but got '{Arguments.Size}!");
                 }
+
+                if (calculatedArgs.Get(0) is not NumberNode leftNode ||
+                    calculatedArgs.Get(1) is not NumberNode rightNode)
+                {
+                    var args = new ArrayList<INode>();
+                    args.Add(calculatedArgs.Get(0));
+                    args.Add(calculatedArgs.Get(1));
+                    return new FunctionNode(Name, args);
+                }
                 
-                argument1 = calculatedArgs.Get(0);
-                argument2 = calculatedArgs.Get(1);
+                argument1 = leftNode.Value;
+                argument2 = rightNode.Value;
 
                 result = Name switch
                 {
@@ -56,7 +74,17 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
 
         }
 
-        return result;
+        return new NumberNode(result);
+    }
 
+    public string Show(Dictionary<string, INode> memory)
+    {
+        string arguments = "";
+        for(var i = 0; i < Arguments.Size; i++)
+        {
+            arguments += Arguments.Get(i).Show(memory) + ", ";
+        }
+
+        return Name + "(" + arguments + ")";
     }
 }

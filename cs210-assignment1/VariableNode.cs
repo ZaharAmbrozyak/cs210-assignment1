@@ -4,13 +4,20 @@ public class VariableNode(string name) : INode
 {
     public string Name { get; } = name;
 
-    public double Calculate(Dictionary<string, double> memory)
+    public INode Calculate(Dictionary<string, INode> memory)
     {
-        if (memory.TryGetValue(Name, out var value))
+        if (memory.TryGetValue(Name, out var tree))
         {
-            return value;
+            var shortedTree = tree.Calculate(memory);
+
+            return shortedTree;
         }
 
-        throw new ArgumentException($"Variable '{Name}' does not exist!");
+        return this;
+    }
+
+    public string Show(Dictionary<string, INode> memory)
+    {
+        return Name;
     }
 }

@@ -1,7 +1,70 @@
 namespace cs210_assignment1;
 
-public class ShuntingYard : Calculator
+public class ShuntingYard
 {
+    protected readonly Dictionary<string, double> _memory = new();
+    protected Lexer GetLexer(string expression)
+    {
+        var lexer = new Lexer(expression.Length + 1);
+        var i = 0;
+        while (i < expression.Length)
+        {
+            var symbol = expression[i];
+
+            if (char.IsWhiteSpace(symbol))
+            {
+                i++;
+            }
+            else if (char.IsDigit(symbol))
+            {
+                var number = "";
+
+                while (i < expression.Length)
+                {
+                    if (char.IsDigit(expression[i]) || expression[i] == ',')
+                    {
+                        number += expression[i]; 
+                    }
+                    else if (expression[i] == '.')
+                    {
+                        number += ",";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                    i++;
+                }
+
+                lexer.Add(new NumberToken(double.Parse(number)));
+            }
+            else if (char.IsLetter(symbol))
+            {
+                var word = "";
+                while (i < expression.Length && char.IsLetter(expression[i]))
+                {
+                    word += expression[i];
+                    i++;
+                }
+
+                if (i < expression.Length && expression[i] == '(')
+                {
+                    lexer.Add(new FunctionToken(word));
+                }
+                else
+                {
+                    lexer.Add(new VariableToken(word));
+                }
+            }
+            else
+            {
+                lexer.Add(new OperationToken(symbol.ToString()));
+                i++;
+            }
+        }
+        lexer.Add(new EofToken());
+        return lexer;
+    }
     private PostfixExpression GetPostfix(Lexer lexer)
     {
         var postfix = new PostfixExpression(lexer.Size + 1);
@@ -189,12 +252,12 @@ public class ShuntingYard : Calculator
 
     private double CalculateFromString(string expression)
     {
-        var lexer = GetLexer(expression!);
+        var lexer = GetLexer(expression);
         var postfix = GetPostfix(lexer);
         var result = CalculatePostfix(postfix);
         return result;
     }
-    public override void Run()
+    public void Run()
     {
         while (true)
         {

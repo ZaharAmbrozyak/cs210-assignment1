@@ -6,7 +6,7 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
     
     public readonly ArrayList<INode> Arguments = operands;
 
-    public double Calculate(Dictionary<string, double> memory)
+    public INode Calculate(Dictionary<string, INode> memory)
     {
         if (Operator == "=")
         {
@@ -22,17 +22,36 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
             return rhs;
         }
 
-        var left = Arguments.Get(0).Calculate(memory);
-        var right = Arguments.Get(1).Calculate(memory);
+        var first = Arguments.Get(0).Calculate(memory);
+        var second = Arguments.Get(1).Calculate(memory);
 
-        return Operator switch
+        if (first is NumberNode leftNumber && second is NumberNode rightNumber)
         {
-            "+" => left + right,
-            "-" => left - right,
-            "*" => left * right,
-            "/" => left / right,
-            "^" => Math.Pow(left, right),
-            _ => throw new ArgumentException($"Operator {Operator} does not exist!")
-        };
+            var left = leftNumber.Value;
+            var right = rightNumber.Value;
+            var result = Operator switch
+            {
+                "+" => left + right,
+                "-" => left - right,
+                "*" => left * right,
+                "/" => left / right,
+                "^" => Math.Pow(left, right),
+                _ => throw new ArgumentException($"Operator {Operator} does not exist!")
+            };
+            return new NumberNode(result);
+        }
+
+        var args = new ArrayList<INode>();
+        args.Add(first);
+        args.Add(second);
+        return new OperationNode(Operator, args);
+    }
+
+    public string Show(Dictionary<string, INode> memory)
+    {
+        var first = Arguments.Get(0).Calculate(memory).Show(memory);
+        var second = Arguments.Get(1).Calculate(memory).Show(memory);
+
+        return first + Operator + second;
     }
 }
