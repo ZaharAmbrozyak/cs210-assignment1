@@ -2,8 +2,8 @@ namespace cs210_assignment1;
 
 public class ShuntingYard
 {
-    protected readonly Dictionary<string, double> _memory = new();
-    protected Lexer GetLexer(string expression)
+    private readonly Dictionary<string, double> _memory = new();
+    private Lexer GetLexer(string expression)
     {
         var lexer = new Lexer(expression.Length + 1);
         var i = 0;

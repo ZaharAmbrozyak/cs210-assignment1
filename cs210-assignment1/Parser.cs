@@ -190,8 +190,8 @@ public class Parser
                 break;
             }
 
-            Console.WriteLine(CalculateExpression(expression));
-            // ShowAst(ParseExpression(GetLexer(expression), 0.0), "");
+            // Console.WriteLine(CalculateExpression(expression)); 
+            ShowAst(ParseExpression(GetLexer(expression), 0.0), "");
         }
     }
 
