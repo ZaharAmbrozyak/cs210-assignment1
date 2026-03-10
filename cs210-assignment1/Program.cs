@@ -18,6 +18,6 @@ static class Program
         var expression = Console.ReadLine()!;
         var lexer = calculator.GetLexer(expression);
         var node = calculator.ParseExpression(lexer, 0.0);
-        
+        calculator.ShowAST(node, "");
     }
 }

@@ -120,6 +120,32 @@ public class Calculator
         return lhs;
     }
 
+    public void ShowAST(INode node, string backTrack)
+    {
+        switch (node)
+        {
+            case NumberNode numberNode:
+                Console.WriteLine(numberNode.Value);
+                break;
+            case OperationNode operationNode:
+            {
+                Console.WriteLine(operationNode.Operator);
+                for (var i = 0; i < operationNode.Operands.Size; i++)
+                {
+                    Console.Write(backTrack + "|-- ");
+                
+                    var isLast = (i == operationNode.Operands.Size - 1); 
+                    var nextBackTrack = backTrack + (isLast ? "    " : "|   ");
+                    var operand = operationNode.Operands.Get(i);
+                
+                    ShowAST(operand, nextBackTrack);
+                }
+
+                break;
+            }
+        }
+    }
+    
     private (double, double) GetBindingPower(string op)
     {
         return op switch
