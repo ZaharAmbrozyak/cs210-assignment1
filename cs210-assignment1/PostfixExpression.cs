@@ -2,7 +2,7 @@ namespace cs210_assignment1;
 
 public class PostfixExpression(int size)
 {
-    private readonly Queue<IToken> _queue = new Queue<IToken>(size);
+    private readonly Queue<IToken> _queue = new(size);
 
     public int Size => _queue.Size;
 

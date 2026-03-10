@@ -1,61 +1,7 @@
 namespace cs210_assignment1;
 
-public class ShuntingYard
+public class ShuntingYard : Calculator
 {
-    private readonly Dictionary<string, double> _memory = new();
-    
-    private Lexer GetLexer(string expression)
-    {
-        var lexer = new Lexer(expression.Length + 1);
-        var i = 0;
-        while (i < expression.Length)
-        {
-            var symbol = expression[i];
-
-            if (char.IsWhiteSpace(symbol))
-            {
-                i++;
-            }
-            else if (char.IsDigit(symbol))
-            {
-                var number = "";
-
-                while (i < expression.Length && (char.IsDigit(expression[i]) || expression[i] == '.'))
-                {
-                    number += expression[i];
-                    i++;
-                }
-
-                lexer.Add(new NumberToken(double.Parse(number)));
-            }
-            else if (char.IsLetter(symbol))
-            {
-                var word = "";
-                while (i < expression.Length && char.IsLetter(expression[i]))
-                {
-                    word += expression[i];
-                    i++;
-                }
-
-                if (i < expression.Length && expression[i] == '(')
-                {
-                    lexer.Add(new FunctionToken(word));
-                }
-                else
-                {
-                    lexer.Add(new VariableToken(word));
-                }
-            }
-            else
-            {
-                lexer.Add(new OperationToken(symbol.ToString()));
-                i++;
-            }
-        }
-        lexer.Add(new EofToken());
-        return lexer;
-    }
-
     private PostfixExpression GetPostfix(Lexer lexer)
     {
         var postfix = new PostfixExpression(lexer.Size + 1);
@@ -77,7 +23,7 @@ public class ShuntingYard
                     rhsPostfix.Add(new EofToken());
                     return rhsPostfix;
                 }
-                throw new Exception("Lhs should be a variable!");
+                throw new ArgumentException("Lhs should be a variable!");
             }
             
             if (token is NumberToken numberToken)
@@ -176,7 +122,7 @@ public class ShuntingYard
 
             else if (token is VariableToken variableToken)
             {
-                if(_memory.TryGetValue(variableToken.Name, out var value))
+                if (_memory.TryGetValue(variableToken.Name, out var value))
                 {
                     stack.Add(new NumberToken(value));
                 }
@@ -248,7 +194,7 @@ public class ShuntingYard
         var result = CalculatePostfix(postfix);
         return result;
     }
-    public void Run()
+    public override void Run()
     {
         while (true)
         {
@@ -270,7 +216,7 @@ public class ShuntingYard
             "*" or "/" => 2,
             "^" => 3,
             "sin" or "cos" or "tan" or "log" or "max" or "min" => 4,
-            _ => throw new Exception($"Unknown operator: {op}")
+            _ => throw new ArgumentException($"Unknown operator: {op}")
         };
     }
 }

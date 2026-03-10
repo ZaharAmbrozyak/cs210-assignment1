@@ -8,8 +8,8 @@ static class Program
         // var shuntingYard = new ShuntingYard();
         // shuntingYard.Run();
 
-        var calculator = new Calculator();
-        calculator.Run();
+        var parser = new Parser();
+        parser.Run();
         
     }
 }
