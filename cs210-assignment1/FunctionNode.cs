@@ -21,7 +21,7 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
         double argument1, argument2, result;
         switch (Name)
         {
-            case "sin" or "cos" or "tan" or "log":
+            case "sin" or "cos" or "tan" or "tg" or "log":
                 if (Arguments.Size != 1)
                 {
                     throw new ArgumentException($"Expected 1 argument but got {Arguments.Size}!");
@@ -32,7 +32,7 @@ public class FunctionNode(string name, ArrayList<INode> arguments) : INode
                 {
                     "sin" => Math.Sin(argument1),
                     "cos" => Math.Cos(argument1),
-                    "tan" => Math.Tan(argument1),
+                    "tan" or "tg" => Math.Tan(argument1),
                     "log" => Math.Log(argument1)
                 };
                 break;

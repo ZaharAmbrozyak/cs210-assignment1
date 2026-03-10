@@ -18,9 +18,20 @@ public class Calculator
             {
                 var number = "";
 
-                while (i < expression.Length && (char.IsDigit(expression[i]) || expression[i] == '.'))
+                while (i < expression.Length)
                 {
-                    number += expression[i];
+                    if (char.IsDigit(expression[i]) || expression[i] == ',')
+                    {
+                        number += expression[i]; 
+                    }
+                    else if (expression[i] == '.')
+                    {
+                        number += ",";
+                    }
+                    else
+                    {
+                        break;
+                    }
                     i++;
                 }
 
@@ -203,6 +214,7 @@ public class Calculator
     {
         return op switch
         {
+            "=" => (0.2, 0.1),
             "+" or "-" => (1.0, 1.1),
             "*" or "/" => (2.0, 2.1),
             "^" => (3.1, 3.0),
