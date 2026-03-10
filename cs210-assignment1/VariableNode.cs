@@ -2,10 +2,15 @@ namespace cs210_assignment1;
 
 public class VariableNode(string name) : INode
 {
-    public string Name { get; set; } = name;
+    public string Name { get; } = name;
 
-    public double Calculate()
+    public double Calculate(Dictionary<string, double> memory)
     {
-        throw new NotImplementedException();
+        if (memory.TryGetValue(Name, out var value))
+        {
+            return value;
+        }
+
+        throw new ArgumentException($"Variable '{Name}' does not exist!");
     }
 }
