@@ -67,17 +67,54 @@ public class Calculator
             case VariableToken variableToken:
                 lhs = new VariableNode(variableToken.Name);
                 break;
-            case FunctionToken:
-                throw new NotImplementedException();
-            case OperationToken { Operation: "(" }:
-                lhs = ParseExpression(lexer, 0.0);
-
-                var nextToken = lexer.Get();
-                if (nextToken is not OperationToken { Operation: ")" })
+            case FunctionToken functionToken:
+                if (lexer is { Peek: OperationToken { Operation: "(" } })
                 {
-                    throw new ArgumentException($"Expected ')' but got {nextToken}");
+                    lexer.Get();
+                    var arguments = new ArrayList<INode>();
+
+                    if (lexer is { Peek: OperationToken { Operation: ")" } })
+                    {
+                        lexer.Get();
+                    }
+                    else
+                    {
+                        while (true)
+                        {
+                            arguments.Add(ParseExpression(lexer, 0.0));
+
+                            var nextToken = lexer.Get();
+                            if (nextToken is OperationToken { Operation: "," })
+                            {
+                                continue;
+                            }
+
+                            if (nextToken is OperationToken { Operation: ")" })
+                            {
+                                break;
+                            }
+
+                            throw new ArgumentException($"Expected ',' or ')' but got {nextToken}");
+                        }
+                    }
+
+                    lhs = new FunctionNode(functionToken.Name, arguments);
+                }
+                else
+                {
+                    throw new ArgumentException($"Expected '(' but got {lexer.Peek}");
                 }
 
+                break;
+                
+            case OperationToken { Operation: "(" }:
+                lhs = ParseExpression(lexer, 0.0);
+                
+                if (lexer is not {Peek: OperationToken { Operation: ")" } })
+                {
+                    throw new ArgumentException($"Expected ')' but got {lexer.Peek}");
+                }
+                lexer.Get();
                 break;
             default:
                 throw new ArgumentException($"Unknown token: {firstToken}");
@@ -120,7 +157,7 @@ public class Calculator
         return lhs;
     }
 
-    public void ShowAST(INode node, string backTrack)
+    public void ShowAst(INode node, string backTrack)
     {
         switch (node)
         {
@@ -138,7 +175,7 @@ public class Calculator
                     var nextBackTrack = backTrack + (isLast ? "    " : "|   ");
                     var operand = operationNode.Operands.Get(i);
                 
-                    ShowAST(operand, nextBackTrack);
+                    ShowAst(operand, nextBackTrack);
                 }
 
                 break;

@@ -20,7 +20,7 @@ static class Program
         var node = calculator.ParseExpression(lexer, 0.0);
         Dictionary<string, double> memory = new();
         Console.WriteLine(node.Calculate(memory));
-        calculator.ShowAST(node, "");
+        calculator.ShowAst(node, "");
         
     }
 }
