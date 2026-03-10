@@ -23,7 +23,7 @@ public class OperationNode(string op, ArrayList<INode> operands) : INode
             
             memory[variableNode.Name] = rhs;
 
-            return rhs;
+            return rhs.Calculate(memory, visited);
         }
 
         var first = Arguments.Get(0).Calculate(memory, visited);
