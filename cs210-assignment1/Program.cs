@@ -9,8 +9,15 @@ static class Program
         CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
         CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
-        var algorithm = new ShuntingYard();
+        var shuntingYard = new ShuntingYard();
         
-        algorithm.Run();
+        // shuntingYard.Run();
+
+        var calculator = new Calculator();
+
+        var expression = Console.ReadLine()!;
+        var lexer = calculator.GetLexer(expression);
+        var node = calculator.ParseExpression(lexer, 0.0);
+        
     }
 }
