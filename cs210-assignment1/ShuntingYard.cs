@@ -4,7 +4,7 @@ public class ShuntingYard
 {
     private readonly Dictionary<string, double> _memory = new();
     
-    public Lexer GetLexer(string expression)
+    private Lexer GetLexer(string expression)
     {
         var lexer = new Lexer(expression.Length + 1);
         var i = 0;
@@ -56,7 +56,7 @@ public class ShuntingYard
         return lexer;
     }
 
-    public PostfixExpression GetPostfix(Lexer lexer)
+    private PostfixExpression GetPostfix(Lexer lexer)
     {
         var postfix = new PostfixExpression(lexer.Size + 1);
         var stack = new Stack<IToken>(lexer.Size);
@@ -79,7 +79,8 @@ public class ShuntingYard
                 }
                 throw new Exception("Lhs should be a variable!");
             }
-            else if (token is NumberToken numberToken)
+            
+            if (token is NumberToken numberToken)
             {
                 postfix.Add(numberToken);
             }
@@ -160,7 +161,7 @@ public class ShuntingYard
         return postfix;
     }
 
-    public double CalculatePostfix(PostfixExpression postfix)
+    private double CalculatePostfix(PostfixExpression postfix)
     {
         var stack = new Stack<IToken>(postfix.Size); 
         double valueLeft, valueRight, result;
@@ -257,7 +258,7 @@ public class ShuntingYard
             {
                 break;
             }
-            Console.WriteLine("<<< " + CalculateFromString(expression));
+            Console.WriteLine(CalculateFromString(expression));
         }
 
     }

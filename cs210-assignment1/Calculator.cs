@@ -2,7 +2,9 @@ namespace cs210_assignment1;
 
 public class Calculator
 {
-    public Lexer GetLexer(string expression)
+    private readonly Dictionary<string, double> _memory = new();
+    
+    private Lexer GetLexer(string expression)
     {
         var lexer = new Lexer(expression.Length + 1);
         var i = 0;
@@ -65,7 +67,7 @@ public class Calculator
         return lexer;
     }
 
-    public INode ParseExpression(Lexer lexer, double bindingPower)
+    private INode ParseExpression(Lexer lexer, double bindingPower)
     {
         var firstToken = lexer.Get();
         
@@ -166,6 +168,30 @@ public class Calculator
         }
 
         return lhs;
+    }
+
+    private double CalculateExpression(string expression)
+    {
+        var lexer = GetLexer(expression);
+        var node = ParseExpression(lexer, 0.0);
+        
+        return node.Calculate(_memory);
+    }
+    public void Run()
+    {
+        while (true)
+        {
+            Console.Write(">>> ");
+            var expression = Console.ReadLine()!;
+            if (string.IsNullOrEmpty(expression) || expression == "exit")
+            {
+                break;
+            }
+
+            var output = CalculateExpression(expression);
+            
+            Console.WriteLine(output); 
+        }
     }
 
     public void ShowAst(INode node, string backTrack)
