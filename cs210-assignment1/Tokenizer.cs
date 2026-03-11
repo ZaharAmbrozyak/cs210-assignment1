@@ -4,14 +4,21 @@ public class Tokenizer
 {
     protected Lexer GetLexer(string expression)
     {
-        var lexer = new Lexer(expression.Length + 1);
+        var lexer = new Lexer(expression.Length + 10);
         var i = 0;
+        var expectMinus = true;
         while (i < expression.Length)
         {
             var symbol = expression[i];
 
             if (char.IsWhiteSpace(symbol))
             {
+                i++;
+            }
+            else if (expectMinus && symbol == '-')
+            {
+                lexer.Add(new NumberToken(-1));
+                lexer.Add(new OperationToken("*"));
                 i++;
             }
             else if (char.IsDigit(symbol))
@@ -36,6 +43,7 @@ public class Tokenizer
                 }
 
                 lexer.Add(new NumberToken(double.Parse(number)));
+                expectMinus = false;
             }
             else if (char.IsLetter(symbol))
             {
@@ -55,8 +63,13 @@ public class Tokenizer
                     lexer.Add(new VariableToken(word));
                 }
             }
+            
             else
             {
+                if (symbol == '(' || symbol == '=')
+                {
+                    expectMinus = true;
+                }
                 lexer.Add(new OperationToken(symbol.ToString()));
                 i++;
             }
