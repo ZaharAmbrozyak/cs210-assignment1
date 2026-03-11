@@ -20,6 +20,7 @@ public class Tokenizer
                 lexer.Add(new NumberToken(-1));
                 lexer.Add(new OperationToken("*"));
                 i++;
+                expectMinus = false;
             }
             else if (char.IsDigit(symbol))
             {
